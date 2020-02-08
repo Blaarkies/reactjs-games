@@ -1,0 +1,47 @@
+:root {
+    background: radial-gradient(#2f3034 30%, #0d0d0d 150%);
+    height: 100%;
+}
+
+.game-container {
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-gap: 30px;
+    place-content: center;
+    height: 100vh;
+}
+
+.status {
+    font-size: 50px;
+    color: aliceblue;
+    text-align: center;
+}
+
+.actions-container {
+    padding: 20px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    grid-gap: 32px;
+}
+
+.action {
+    font-size: 100px;
+    padding: 100px;
+    background-color: #aeaeae;
+    width: max-content;
+    border-radius: 50%;
+    cursor: pointer;
+
+    transition: 150ms ease-in-out;
+    user-focus: none;
+}
+
+.action:hover {
+    filter: brightness(0.8);
+    transform: translateY(1%);
+}
+
+button:focus {
+    outline: 0;
+}
