@@ -109,3 +109,31 @@ button:hover {
 button:focus {
     outline: 0;
 }
+
+@media only screen and (max-width: 1024px) {
+    .action {
+        font-size: 70px;
+        padding: 50px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .actions-container {
+        grid-auto-flow: row;
+        justify-content: center;
+    }
+
+    .action {
+        font-size: 50px;
+        padding: 20px;
+    }
+
+    .status-text {
+        font-size: 30px;
+    }
+
+    button {
+        font-size: 20px;
+        padding: 6px;
+    }
+}

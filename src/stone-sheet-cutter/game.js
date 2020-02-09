@@ -3,7 +3,7 @@ import {Action} from './action';
 import './style.css'
 import {getRandomFromArray} from '../common/utilities';
 import {Aftermath} from './aftermath';
-import {actions} from "./enums";
+import {actions} from './enums';
 
 export class Game extends React.Component {
 
@@ -54,8 +54,6 @@ export class Game extends React.Component {
 
     handleResetClick() {
         this.setState({
-            playerAction: undefined,
-            opponentAction: undefined,
             flipDirectionIsForward: false,
             gameBoardClasses: ['display-none'],
             messageBoardClasses: ['flip-message-backward'],
@@ -70,6 +68,8 @@ export class Game extends React.Component {
             })
         } else {
             this.setState({
+                playerAction: undefined,
+                opponentAction: undefined,
                 gameBoardClasses: ['flip-game-board-backward'],
                 messageBoardClasses: ['display-none']
             })
