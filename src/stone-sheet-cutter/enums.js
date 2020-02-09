@@ -18,3 +18,10 @@ export const actions = {
         defeatedByIndex: 0
     }
 };
+
+export const flipStates = {
+    startIdle: 'startIdle',
+    forwardFlip: 'forwardFlip',
+    endIdle: 'endIdle',
+    backwardFlip: 'backwardFlip',
+};
