@@ -3,7 +3,8 @@ import {Action} from './action';
 import './style.css'
 import {getRandomFromArray} from '../common/utilities';
 import {Aftermath} from './aftermath';
-import {actions} from './enums';
+import {actions, flipStates} from './enums';
+import {AnimatedFlip} from '../common/components/animated-flip';
 
 export class Game extends React.Component {
 
@@ -11,8 +12,7 @@ export class Game extends React.Component {
         super(props);
         this.state = {
             actions: actions,
-            gameBoardClasses: [],
-            messageBoardClasses: ['display-none']
+            flipState: flipStates.startIdle,
         };
     }
 
@@ -32,73 +32,44 @@ export class Game extends React.Component {
         this.setState({
             playerAction: playerAction,
             opponentAction: opponentAction,
-            flipDirectionIsForward: true,
-            gameBoardClasses: ['flip-game-board-forward'],
-            messageBoardClasses: ['display-none']
+            flipState: flipStates.forwardFlip
         });
-    }
-
-    handleGameBoardEndAnimation() {
-        if (this.state.flipDirectionIsForward) {
-            this.setState({
-                gameBoardClasses: ['display-none'],
-                messageBoardClasses: ['flip-message-forward']
-            })
-        } else {
-            this.setState({
-                gameBoardClasses: [],
-                messageBoardClasses: ['display-none']
-            })
-        }
     }
 
     handleResetClick() {
+        this.setState({flipState: flipStates.backwardFlip,});
+    }
+
+    handleContinueBackwardFlip() {
         this.setState({
-            flipDirectionIsForward: false,
-            gameBoardClasses: ['display-none'],
-            messageBoardClasses: ['flip-message-backward'],
+            playerAction: undefined,
+            opponentAction: undefined
         });
     }
 
-    handleMessageEndAnimation() {
-        if (this.state.flipDirectionIsForward) {
-            this.setState({
-                gameBoardClasses: ['display-none'],
-                messageBoardClasses: []
-            })
-        } else {
-            this.setState({
-                playerAction: undefined,
-                opponentAction: undefined,
-                gameBoardClasses: ['flip-game-board-backward'],
-                messageBoardClasses: ['display-none']
-            })
-        }
-    }
-
     render() {
-        const status = 'Pick your tool';
-
         return (
-            <div className={`screen-container`}>
-                <div className={`game-container ${this.state.gameBoardClasses.join(' ')}`}
-                     onAnimationEnd={() => this.handleGameBoardEndAnimation()}>
-                    <div className="status-text">{status}</div>
-                    <div className="actions-container">
-                        {this.renderAction(this.state.actions.stone)}
-                        {this.renderAction(this.state.actions.sheet)}
-                        {this.renderAction(this.state.actions.cutter)}
-                    </div>
-                </div>
+            <div className="screen-container">
+                <AnimatedFlip onContinueBackwardFlip={() => this.handleContinueBackwardFlip()}
+                              flipState={this.state.flipState}
+                              value={[
+                                  <div className="game-container">
+                                      <div className="status-text">Pick your tool</div>
+                                      <div className="actions-container">
+                                          {this.renderAction(this.state.actions.stone)}
+                                          {this.renderAction(this.state.actions.sheet)}
+                                          {this.renderAction(this.state.actions.cutter)}
+                                      </div>
+                                  </div>,
 
-                <div className={`message-container ${this.state.messageBoardClasses.join(' ')}`}
-                     onAnimationEnd={() => this.handleMessageEndAnimation()}>
-                    <Aftermath value={[this.state.playerAction, this.state.opponentAction]}
-                               onClick={() => this.handleResetClick()}/>
-                </div>
+                                  <div className="game-container">
+                                      <Aftermath value={[this.state.playerAction, this.state.opponentAction]}
+                                                 onClick={() => this.handleResetClick()}/>
+                                  </div>
+                              ]}>
+                </AnimatedFlip>
             </div>
         );
     }
-
 
 }
