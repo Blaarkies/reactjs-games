@@ -1,11 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import {Game} from './stone-sheet-cutter/game';
+// import {StoneSheetCutter} from './stone-sheet-cutter/stoneSheetCutter';
+import {TicTacToe} from "./tic-tac-toe/ticTacToe";
 
 function App() {
     return (
-        <Game></Game>
+        // <StoneSheetCutter></StoneSheetCutter>
+        <TicTacToe></TicTacToe>
     );
 }
 

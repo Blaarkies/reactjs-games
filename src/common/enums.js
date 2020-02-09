@@ -1,4 +1,4 @@
-export const actions = {
+export const StoneSheetCutterActions = {
     stone: {
         enum: 'stone',
         display: '🧱',
@@ -19,9 +19,16 @@ export const actions = {
     }
 };
 
-export const flipStates = {
+export const FlipStates = {
     startIdle: 'startIdle',
     forwardFlip: 'forwardFlip',
     endIdle: 'endIdle',
     backwardFlip: 'backwardFlip',
+};
+
+export const SlideStates = {
+    startIdle: 'startIdle',
+    forwardSlide: 'forwardSlide',
+    endIdle: 'endIdle',
+    backwardSlide: 'backwardSlide',
 };

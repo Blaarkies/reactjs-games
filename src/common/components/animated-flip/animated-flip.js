@@ -1,6 +1,7 @@
 import * as React from "react";
-import {flipStates} from "../../stone-sheet-cutter/enums";
-import {emptyFunction} from "../utilities";
+import {FlipStates} from "../../enums";
+import {emptyFunction} from "../../utilities";
+import "./style.css";
 
 export class AnimatedFlip extends React.Component {
 
@@ -21,16 +22,16 @@ export class AnimatedFlip extends React.Component {
     render() {
         if (this.state.lastFlipState !== this.props.flipState) {
             switch (this.props.flipState) {
-                case flipStates.startIdle:
+                case FlipStates.startIdle:
 
                     break;
-                case flipStates.forwardFlip:
+                case FlipStates.forwardFlip:
                     this.handleStart();
                     break;
-                case flipStates.endIdle:
+                case FlipStates.endIdle:
 
                     break;
-                case flipStates.backwardFlip:
+                case FlipStates.backwardFlip:
                     this.handleReset();
                     break;
                 default:
@@ -40,7 +41,7 @@ export class AnimatedFlip extends React.Component {
         }
 
         return (
-            <div className="status-text">
+            <div>
                 <div className={this.state.aSideClass}
                      onAnimationEnd={() => this.handleAEndAnimation()}>
                     {this.props.value[0]}

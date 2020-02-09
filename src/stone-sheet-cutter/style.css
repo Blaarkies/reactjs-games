@@ -1,8 +1,3 @@
-:root {
-    background: radial-gradient(#2f3034 30%, #0d0d0d 150%);
-    height: 100%;
-}
-
 .screen-container {
     height: 100vh;
     display: grid;
@@ -17,53 +12,6 @@
 
     grid-row: 1 / 1;
     grid-column: 1 / 1;
-}
-
-.message-container {
-    display: grid;
-    grid-auto-columns: max-content;
-    grid-gap: 30px;
-
-    grid-row: 1 / 1;
-    grid-column: 1 / 1;
-}
-
-.flip-game-board-forward {
-    animation: flip-forward-90 500ms ease-in both;
-}
-
-.flip-message-forward {
-    animation: flip-backward-90 500ms ease-in both;
-}
-
-.flip-game-board-backward {
-    animation: flip-forward-90 500ms ease-in both reverse;
-}
-
-.flip-message-backward {
-    animation: flip-backward-90 500ms ease-in both reverse;
-}
-
-@keyframes flip-forward-90 {
-    from {
-        transform: rotate3d(0, 1, 0, 0deg);
-    }
-    to {
-        transform: rotate3d(0, 1, 0, 90deg);
-    }
-}
-
-@keyframes flip-backward-90 {
-    from {
-        transform: rotate3d(0, 1, 0, -90deg);
-    }
-    to {
-        transform: rotate3d(0, 1, 0, 0deg);
-    }
-}
-
-.display-none {
-    display: none;
 }
 
 .status-text {
@@ -88,29 +36,6 @@
     border-radius: 50%;
 }
 
-button {
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    padding: 10px;
-
-    width: max-content;
-    border-radius: 4px;
-
-    background-color: #aeaeae;
-    cursor: pointer;
-    transition: 150ms ease-in-out;
-}
-
-button:hover {
-    filter: brightness(0.8);
-    transform: translateY(1%);
-}
-
-button:focus {
-    outline: 0;
-}
-
 @media only screen and (max-width: 1024px) {
     .action {
         font-size: 70px;
@@ -131,10 +56,5 @@ button:focus {
 
     .status-text {
         font-size: 30px;
-    }
-
-    button {
-        font-size: 20px;
-        padding: 6px;
     }
 }
