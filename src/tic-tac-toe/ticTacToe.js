@@ -8,7 +8,7 @@ import {SlideStates} from "../common/enums";
 
 export class TicTacToe extends React.Component {
 
-    players = ['A', 'B'].map((name, i) => ({name: name, index: i, flag: !i ? 'O' : 'X'}));
+    players = ['A', 'B'].map((name, i) => ({name: name, index: i, flag: !i ? '0' : '1'}));
 
     constructor(props) {
         super(props);

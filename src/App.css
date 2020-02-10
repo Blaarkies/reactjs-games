@@ -44,6 +44,24 @@ button:focus {
 }
 
 
+.navbar {
+  position: absolute;
+  display: grid;
+  grid-gap: 8px;
+  padding: 8px;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.navbar button {
+  background-color: dimgray;
+  border: none;
+  font-size: 22px;
+}
+
+a {
+  color: black;
+}
 
 
 

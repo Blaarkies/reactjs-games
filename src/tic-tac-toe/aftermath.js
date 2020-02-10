@@ -14,7 +14,7 @@ export class Aftermath extends React.Component {
 
         return (
             <div className="status-text">
-                <div>{aftermathMessage}</div>
+                <div className="aftermath-message">{aftermathMessage}</div>
                 <button onClick={() => this.props.onClick()}>
                     Reset
                 </button>

@@ -1,4 +1,4 @@
-# [Demo](reactjs-games.blaarkies.com)
+# [Demo](https://reactjs-games.blaarkies.com)
 
 #
 
