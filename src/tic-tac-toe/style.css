@@ -3,6 +3,7 @@
     display: grid;
     place-items: center;
     perspective: 110vh;
+    overflow: hidden;
 }
 
 .game-container {
@@ -72,10 +73,13 @@
 }
 
 @media only screen and (max-width: 1024px) {
+    .status-text {
+        font-size: 30px;
+    }
     .tile {
-        font-size: 45px;
-        width: 70px;
-        height: 70px;
+        /*font-size: 30px;*/
+        /*width: 70px;*/
+        /*height: 70px;*/
     }
 }
 
@@ -90,6 +94,20 @@
     animation: clipPathDrawSquare 1s ease-in-out both;
 }
 
+.tron-square-leading-dot-container {
+    z-index: 1;
+    animation: translateDrawSquare 1s ease-in-out both;
+}
+
+.leading-dot {
+    transform: translate(-25%, -25%);
+    border-radius: 35%;
+    filter: drop-shadow(0 0 3px white);
+    height: 10%;
+    width: 10%;
+    background-color: #d9a3ff;
+}
+
 @keyframes clipPathDrawSquare {
     0% {clip-path:   polygon(0% 5%, 0% 0%, 0% 0%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%);}
     25% {clip-path:  polygon(0% 5%, 0% 0%, 100% 0%, 100% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%);}
@@ -98,17 +116,25 @@
     100% {clip-path: polygon(0% 5%, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 5%, 5% 5%, 5% 95%, 95% 95%, 95% 5%);}
 }
 
+@keyframes translateDrawSquare {
+    0% {transform: translate(0%, 0%);}
+    25% {transform: translate(95%, 0%);}
+    50% {transform: translate(95%, 95%);}
+    75% {transform: translate(0%, 95%);opacity: 1;}
+    100% {transform: translate(0%, 0%); opacity: 0;}
+}
+
 .overlap-container {
     display: grid;
 }
 
-.overlap-container >*:first-child, .overlap-container >*:last-child {
+.overlap-container > * {
     grid-row: 1/1;
     grid-column: 1/1;
 }
 
 .overglow-bloom {
-    animation: glowTile 1s cubic-bezier(0.21, 2.35, 0.85,-0.4) both alternate-reverse;
+    animation: glowTile 1s cubic-bezier(0.21, 2.35, 0.85, -0.4) both alternate-reverse;
 }
 
 .aftermath-message {

@@ -6,15 +6,18 @@ import {BrowserRouter as Router, Link, Route, Switch, useParams} from "react-rou
 import {StoneSheetCutter} from "./stone-sheet-cutter/stoneSheetCutter";
 
 function App() {
+
     return (
         <Router>
-            <div className="navbar">
-                {routes.map(r => <button key={r.url}><Link to={`/${r.url}`}>{r.title}</Link></button> )}
-            </div>
+            <div className="app-container overlap-container">
+                <div className="navbar">
+                    {routes.map(r => <button key={r.url}><Link to={`/${r.url}`}>{r.title}</Link></button>)}
+                </div>
 
-            <Switch>
-                <Route path="/:id" children={<Child/>}/>
-            </Switch>
+                <Switch>
+                    <Route path="/:id" children={<Child/>}/>
+                </Switch>
+            </div>
         </Router>
     );
 }
