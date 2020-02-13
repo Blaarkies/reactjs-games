@@ -1,0 +1,46 @@
+:root {
+  background: radial-gradient(#2f3034 30%, #0d0d0d 150%);
+  height: 100%;
+  overflow: hidden;
+}
+
+.display-none {
+  display: none;
+}
+
+button {
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+
+  width: max-content;
+  border-radius: 4px;
+
+  background-color: #aeaeae;
+  cursor: pointer;
+  transition: 150ms ease-in-out;
+
+  &:hover {
+    filter: brightness(0.8);
+    transform: translateY(1%);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+}
+
+@media only screen and (max-width: 768px) {
+  button {
+    font-size: 20px;
+    padding: 6px;
+  }
+}
+
+.app-container {
+
+}

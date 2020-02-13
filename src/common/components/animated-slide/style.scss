@@ -1,0 +1,29 @@
+.offset-offscreen-left {
+    transform: translateX(-100vw);
+}
+
+.translate-forward {
+    animation: slide-right 1s ease-in-out both;
+}
+
+.translate-back {
+    animation: slide-left 1s ease-in-out both;
+}
+
+@keyframes slide-right {
+    from {
+        transform: translateX(0vw);
+    }
+    to {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes slide-left {
+    from {
+        transform: translateX(100vw);
+    }
+    to {
+        transform: translateX(0vw);
+    }
+}

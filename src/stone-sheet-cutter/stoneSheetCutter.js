@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {Action} from './action';
-import './style.css'
+import './style.scss'
 import {getRandomFromArray} from '../common/utilities';
 import {Aftermath} from './aftermath';
-import {actions, flipStates} from './enums';
-import {AnimatedFlip} from '../common/components/animated-flip';
+import {StoneSheetCutterActions, FlipStates} from '../common/enums';
+import {AnimatedFlip} from '../common/components/animated-flip/animated-flip';
 
-export class Game extends React.Component {
+export class StoneSheetCutter extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            actions: actions,
-            flipState: flipStates.startIdle,
+            actions: StoneSheetCutterActions,
+            flipState: FlipStates.startIdle,
         };
     }
 
@@ -32,12 +32,12 @@ export class Game extends React.Component {
         this.setState({
             playerAction: playerAction,
             opponentAction: opponentAction,
-            flipState: flipStates.forwardFlip
+            flipState: FlipStates.forwardFlip
         });
     }
 
     handleResetClick() {
-        this.setState({flipState: flipStates.backwardFlip,});
+        this.setState({flipState: FlipStates.backwardFlip});
     }
 
     handleContinueBackwardFlip() {
