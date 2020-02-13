@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Action} from './action';
-import './style.css'
+import './style.scss'
 import {getRandomFromArray} from '../common/utilities';
 import {Aftermath} from './aftermath';
 import {StoneSheetCutterActions, FlipStates} from '../common/enums';

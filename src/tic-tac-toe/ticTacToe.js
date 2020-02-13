@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Tile} from './tile';
-import './style.css'
+import './style.scss'
 import {delay, getRange, getUniqueEntries} from '../common/utilities';
 import {AnimatedSlide} from "../common/components/animated-slide/animated-slide";
 import {Aftermath} from "./aftermath";

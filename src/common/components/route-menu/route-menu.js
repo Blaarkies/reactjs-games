@@ -1,6 +1,6 @@
 import * as React from "react";
 import {emptyFunction} from "../../utilities";
-import "./style.css";
+import "./style.scss";
 import {Link} from "react-router-dom";
 
 export class RouteMenu extends React.Component {

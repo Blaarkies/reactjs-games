@@ -1,6 +1,6 @@
 import * as React from "react";
 import {emptyFunction} from "../../utilities";
-import "./style.css";
+import "./style.scss";
 import {SlideStates} from "../../enums";
 
 export class AnimatedSlide extends React.Component {

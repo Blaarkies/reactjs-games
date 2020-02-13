@@ -1,8 +1,8 @@
 import React from 'react';
 // import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import {TicTacToe} from "./tic-tac-toe/ticTacToe";
-import {BrowserRouter as Router, Link, Route, Switch, useParams, Redirect} from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch, useParams} from "react-router-dom";
 import {StoneSheetCutter} from "./stone-sheet-cutter/stoneSheetCutter";
 import {RouteMenu} from "./common/components/route-menu/route-menu";
 
@@ -11,8 +11,7 @@ function App() {
     return (
         <Router>
             <div className="app-container overlap-container">
-                <RouteMenu routes={routes}
-                ></RouteMenu>
+                <RouteMenu routes={routes}/>
                 <Switch>
                     <Redirect exact from="/" to={`/${routes[0].path}`}/>
 

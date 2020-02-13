@@ -1,0 +1,120 @@
+.tiles-container {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: repeat(3, auto);
+  width: max-content;
+  justify-self: center;
+}
+
+.tile {
+  font-size: 55px;
+  width: 100px;
+  height: 100px;
+
+  color: rgba(153, 92, 214, 0.5);
+  background-color: transparent;
+  transition: 0.5s ease-in-out;
+  outline: 1px solid #9994;
+  border-radius: 0;
+
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background-color: #8882;
+    filter: brightness(0.8);
+    transform: translateY(1%);
+  }
+}
+
+.tile-activated {
+  color: aliceblue;
+  outline: none;
+}
+
+@keyframes glowTile {
+  from {
+  }
+  to {
+    filter: drop-shadow(0 0 10px #b866ff);
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .status-text {
+    font-size: 30px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .status-text {
+    font-size: 30px;
+  }
+}
+
+.tron-square {
+  background-color: #A4E;
+  animation: clipPathDrawSquare 1s ease-in-out both;
+}
+
+.tron-square-leading-dot-container {
+  z-index: 1;
+  animation: translateDrawSquare 1s ease-in-out both;
+}
+
+.leading-dot {
+  transform: translate(-25%, -25%);
+  border-radius: 35%;
+  filter: drop-shadow(0 0 3px white);
+  height: 10%;
+  width: 10%;
+  background-color: #d9a3ff;
+}
+
+@keyframes clipPathDrawSquare {
+  0% {
+    clip-path: polygon(0% 5%, 0% 0%, 0% 0%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%, 0% 5%);
+  }
+  25% {
+    clip-path: polygon(0% 5%, 0% 0%, 100% 0%, 100% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%, 95% 5%);
+  }
+  50% {
+    clip-path: polygon(0% 5%, 0% 0%, 100% 0%, 100% 100%, 95% 100%, 95% 95%, 95% 95%, 95% 95%, 95% 95%, 95% 5%);
+  }
+  75% {
+    clip-path: polygon(0% 5%, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 95%, 5% 95%, 5% 95%, 95% 95%, 95% 5%);
+  }
+  100% {
+    clip-path: polygon(0% 5%, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 5%, 5% 5%, 5% 95%, 95% 95%, 95% 5%);
+  }
+}
+
+@keyframes translateDrawSquare {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  25% {
+    transform: translate(95%, 0%);
+  }
+  50% {
+    transform: translate(95%, 95%);
+  }
+  75% {
+    transform: translate(0%, 95%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0%, 0%);
+    opacity: 0;
+  }
+}
+
+.overglow-bloom {
+  animation: glowTile 1s cubic-bezier(0.21, 2.35, 0.85, -0.4) both alternate-reverse;
+}
+
+.aftermath-message {
+  width: 80vw;
+}

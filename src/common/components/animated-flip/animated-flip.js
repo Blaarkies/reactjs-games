@@ -1,7 +1,7 @@
 import * as React from "react";
 import {FlipStates} from "../../enums";
 import {emptyFunction} from "../../utilities";
-import "./style.css";
+import "./style.scss";
 
 export class AnimatedFlip extends React.Component {
 
