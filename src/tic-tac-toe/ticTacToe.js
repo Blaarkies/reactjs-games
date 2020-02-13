@@ -1,14 +1,19 @@
 import * as React from 'react';
 import {Tile} from './tile';
 import './style.css'
-import {getRange} from '../common/utilities';
+import {delay, getRange, getUniqueEntries} from '../common/utilities';
 import {AnimatedSlide} from "../common/components/animated-slide/animated-slide";
 import {Aftermath} from "./aftermath";
-import {SlideStates} from "../common/enums";
+import {PlayerNames, SlideStates} from "../common/enums";
 
 export class TicTacToe extends React.Component {
 
-    players = ['A', 'B'].map((name, i) => ({name: name, index: i, flag: !i ? '0' : '1'}));
+    players = getUniqueEntries(PlayerNames, 2).map((player, i) => ({
+        name: player.name,
+        icon: player.icon,
+        index: i,
+        flag: player.icon
+    }));
 
     constructor(props) {
         super(props);
@@ -23,7 +28,8 @@ export class TicTacToe extends React.Component {
             })),
             playerOnTurn: this.players[0],
             winner: undefined,
-            slideState: SlideStates.startIdle
+            slideState: SlideStates.startIdle,
+            isBoardLocked: false
         };
     }
 
@@ -34,6 +40,9 @@ export class TicTacToe extends React.Component {
     }
 
     handleTileClick(tileNumber) {
+        if (this.state.isBoardLocked) {
+            return;
+        }
         const nextPlayer = this.players[(this.state.playerOnTurn.index + 1) % this.players.length];
         this.setState({
             board: this.state.board.slice().map(t => {
@@ -48,7 +57,7 @@ export class TicTacToe extends React.Component {
         this.checkWinState();
     }
 
-    checkWinState() {
+    async checkWinState() {
         const boardArray = this.state.board.sort((a, b) => a.number - b.number);
 
         const winner = this.players.find(p => {
@@ -64,6 +73,9 @@ export class TicTacToe extends React.Component {
             return;
         }
 
+        this.setState({isBoardLocked: true});
+
+        await delay(1500);
         this.setState({
             winner: winner || 'tie',
             loser: this.players.find(p => p !== winner),
@@ -83,7 +95,7 @@ export class TicTacToe extends React.Component {
     }
 
     render() {
-        let statusMessage = `Player ${this.state.playerOnTurn.name}, pick a tile`;
+        let statusMessage = `${this.state.playerOnTurn.icon} ${this.state.playerOnTurn.name} to pick a tile`;
         return (
             <div className="screen-container">
                 <AnimatedSlide onEndBackwardSlide={() => this.handleStartBackwardSlide()}

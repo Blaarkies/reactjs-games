@@ -2,19 +2,20 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import {TicTacToe} from "./tic-tac-toe/ticTacToe";
-import {BrowserRouter as Router, Link, Route, Switch, useParams} from "react-router-dom";
+import {BrowserRouter as Router, Link, Route, Switch, useParams, Redirect} from "react-router-dom";
 import {StoneSheetCutter} from "./stone-sheet-cutter/stoneSheetCutter";
+import {RouteMenu} from "./common/components/route-menu/route-menu";
 
 function App() {
 
     return (
         <Router>
             <div className="app-container overlap-container">
-                <div className="navbar">
-                    {routes.map(r => <button key={r.url}><Link to={`/${r.url}`}>{r.title}</Link></button>)}
-                </div>
-
+                <RouteMenu routes={routes}
+                ></RouteMenu>
                 <Switch>
+                    <Redirect exact from="/" to={`/${routes[0].path}`}/>
+
                     <Route path="/:id" children={<Child/>}/>
                 </Switch>
             </div>
@@ -24,12 +25,12 @@ function App() {
 
 const routes = [
     {
-        url: 'stone-sheet-cutters',
+        path: 'stone-sheet-cutters',
         title: 'Stone Sheet Cutters',
         component: <StoneSheetCutter></StoneSheetCutter>
     },
     {
-        url: 'ones-and-zeroes',
+        path: 'ones-and-zeroes',
         title: 'Ones and Zeroes',
         component: <TicTacToe></TicTacToe>
     }
@@ -37,7 +38,7 @@ const routes = [
 
 function Child() {
     const {id} = useParams();
-    const routeComponent = routes.find(route => route.url === id) || routes[0];
+    const routeComponent = routes.find(route => route.path === id) || routes[0];
 
     return (
         routeComponent.component

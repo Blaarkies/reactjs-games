@@ -32,3 +32,42 @@ export const SlideStates = {
     endIdle: 'endIdle',
     backwardSlide: 'backwardSlide',
 };
+
+export const PlayerNames = [
+    {
+        name: 'Chappie',
+        icon: '🤖'
+    },
+    {
+        name: 'Casper',
+        icon: '👻'
+    },
+    {
+        name: 'E.T.',
+        icon: '👽'
+    },
+    {
+        name: 'Olaf',
+        icon: '☃'
+    },
+    {
+        name: 'Mr. Freeze',
+        icon: '🥶'
+    },
+    {
+        name: 'Pepe',
+        icon: '🐸'
+    },
+    {
+        name: 'Harambe',
+        icon: '🦍'
+    },
+    {
+        name: 'Sonic',
+        icon: '🦔'
+    },
+    {
+        name: 'KITT',
+        icon: '🚗'
+    },
+];

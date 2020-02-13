@@ -37,7 +37,7 @@ export class StoneSheetCutter extends React.Component {
     }
 
     handleResetClick() {
-        this.setState({flipState: FlipStates.backwardFlip,});
+        this.setState({flipState: FlipStates.backwardFlip});
     }
 
     handleContinueBackwardFlip() {

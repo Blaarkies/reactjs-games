@@ -9,7 +9,7 @@ export class Aftermath extends React.Component {
             aftermathMessage = 'The match has ended in a tie'
         } else {
             aftermathMessage =
-                `Player ${this.props.loser.name} has been defeated by the victorious player ${this.props.winner.name}`
+                `${this.props.loser.name} has been defeated by the victorious ${this.props.winner.name}`
         }
 
         return (
