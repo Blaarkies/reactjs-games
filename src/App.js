@@ -1,10 +1,10 @@
 import React from 'react';
-// import logo from './logo.svg';
 import './App.scss';
-import {TicTacToe} from "./tic-tac-toe/ticTacToe";
+import {OnesAndZeroesGame} from "./ones-and-zeroes/onesAndZeroesGame";
 import {BrowserRouter as Router, Redirect, Route, Switch, useParams} from "react-router-dom";
-import {StoneSheetCutter} from "./stone-sheet-cutter/stoneSheetCutter";
+import {StoneSheetCutterGame} from "./stone-sheet-cutter/stoneSheetCutterGame";
 import {RouteMenu} from "./common/components/route-menu/route-menu";
+import {LimblessLizardGame} from "./limbless-lizard/limblessLizardGame";
 
 function App() {
 
@@ -26,12 +26,17 @@ const routes = [
     {
         path: 'stone-sheet-cutters',
         title: 'Stone Sheet Cutters',
-        component: <StoneSheetCutter></StoneSheetCutter>
+        component: <StoneSheetCutterGame/>
     },
     {
         path: 'ones-and-zeroes',
         title: 'Ones and Zeroes',
-        component: <TicTacToe></TicTacToe>
+        component: <OnesAndZeroesGame/>
+    },
+    {
+        path: 'limbless-lizard',
+        title: 'Limbless Lizard',
+        component: <LimblessLizardGame/>
     }
 ];
 

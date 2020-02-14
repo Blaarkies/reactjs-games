@@ -70,4 +70,62 @@ export const PlayerNames = [
         name: 'KITT',
         icon: '🚗'
     },
+    {
+        name: 'Sabrina',
+        icon: '🧙‍♀️'
+    },
+    {
+        name: 'Seabiscuit',
+        icon: '🏇'
+    },
+    {
+        name: 'Stonks',
+        icon: '📈'
+    },
+    {
+        name: 'Pikachu',
+        icon: '🐁'
+    },
+    {
+        name: 'Nemo',
+        icon: '🐠'
+    },
+    {
+        name: 'Gollum',
+        icon: '💍'
+    },
+    {
+        name: 'Harry',
+        icon: '⚡'
+    },
 ];
+
+export const PositiveAdjectives = [
+    'grand',
+    'mighty',
+    'powerful',
+    'amazing',
+    'awesome',
+    'better',
+    'famous',
+    'magnificent',
+    'tactical',
+];
+
+export const NegativeAdjectives = [
+    'petty',
+    'weak',
+    'lesser',
+    'little',
+    'tiny',
+    'ridiculous',
+    'lame',
+    'daft',
+];
+
+export const KeyboardKeys = {
+    ArrowUp: 'arrowup',
+    ArrowDown: 'arrowdown',
+    ArrowLeft: 'arrowleft',
+    ArrowRight: 'arrowright',
+};

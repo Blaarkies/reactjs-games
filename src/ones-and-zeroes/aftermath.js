@@ -1,4 +1,6 @@
 import * as React from "react";
+import {NegativeAdjectives, PositiveAdjectives} from "../common/enums";
+import {getRandomFromArray} from "../common/utilities";
 
 export class Aftermath extends React.Component {
 
@@ -8,8 +10,10 @@ export class Aftermath extends React.Component {
         } else if (this.props.winner === 'tie') {
             aftermathMessage = 'The match has ended in a tie'
         } else {
+            const badAdjective = getRandomFromArray(NegativeAdjectives);
+            const goodAdjective = getRandomFromArray(PositiveAdjectives);
             aftermathMessage =
-                `${this.props.loser.name} has been defeated by the victorious ${this.props.winner.name}`
+                `The ${badAdjective} ${this.props.loser.name} has been defeated by the ${goodAdjective} ${this.props.winner.name}`
         }
 
         return (
