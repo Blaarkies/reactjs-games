@@ -26,6 +26,7 @@ export class RouteMenu extends React.Component {
                     <div className={`route-options ${this.state.routesClass}`}>
                         {this.props.routes.map(r =>
                             <Link to={r.path} onClick={() => this.handleClick()} key={r.path}>{r.title}</Link>)}
+                        <a target="_blank" href="https://Blaarkies.com">Blaarkies.com</a>
                     </div>
                 </div>
             </div>

@@ -4,11 +4,15 @@ export class Aftermath extends React.Component {
 
     render() {
         return (
-            <div className="status-text">
-                <div className="aftermath-message">aftermathMessage</div>
-                <button onClick={() => this.props.onClick()}>
-                    Reset
-                </button>
+            <div className="status-text overlap-container">
+                <div className="half-transparent-backdrop">
+                    <div className="aftermath-container">
+                        <div className="souls-font">YOU DIED</div>
+                        <button className="souls-button" onClick={() => this.props.onClick()}>
+                            START OVER
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
