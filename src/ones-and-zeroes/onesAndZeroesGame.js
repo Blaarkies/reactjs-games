@@ -6,7 +6,7 @@ import {AnimatedSlide} from "../common/components/animated-slide/animated-slide"
 import {Aftermath} from "./aftermath";
 import {PlayerNames, SlideStates} from "../common/enums";
 
-export class TicTacToe extends React.Component {
+export class OnesAndZeroesGame extends React.Component {
 
     players = getUniqueEntries(PlayerNames, 2).map((player, i) => ({
         name: player.name,
@@ -39,27 +39,38 @@ export class TicTacToe extends React.Component {
                      key={tile.number}/>;
     }
 
-    handleTileClick(tileNumber) {
+    async handleTileClick(tileNumber) {
         if (this.state.isBoardLocked) {
             return;
         }
-        const nextPlayer = this.players[(this.state.playerOnTurn.index + 1) % this.players.length];
+
         this.setState({
             board: this.state.board.slice().map(t => {
                 if (t.number === tileNumber) {
                     t.claimedBy = this.state.playerOnTurn;
                 }
                 return t;
-            }),
-            playerOnTurn: nextPlayer
+            })
         });
+        const winner = this.getWinState();
+        if (winner) {
+            this.setState({isBoardLocked: true});
+            await delay(1500);
+            this.setState({
+                winner: winner || 'tie',
+                loser: this.players.find(p => p !== winner),
+                slideState: SlideStates.forwardSlide
+            });
 
-        this.checkWinState();
+            return;
+        }
+
+        const nextPlayer = this.players[(this.state.playerOnTurn.index + 1) % this.players.length];
+        this.setState({playerOnTurn: nextPlayer});
     }
 
-    async checkWinState() {
+    getWinState() {
         const boardArray = this.state.board.sort((a, b) => a.number - b.number);
-
         const winner = this.players.find(p => {
             return [0, 3, 6].some(row => boardArray.slice(row, 3 + row)
                     .filter(t => t.claimedBy === p).length === 3)
@@ -73,14 +84,7 @@ export class TicTacToe extends React.Component {
             return;
         }
 
-        this.setState({isBoardLocked: true});
-
-        await delay(1500);
-        this.setState({
-            winner: winner || 'tie',
-            loser: this.players.find(p => p !== winner),
-            slideState: SlideStates.forwardSlide
-        });
+        return winner;
     }
 
     handleResetClick() {

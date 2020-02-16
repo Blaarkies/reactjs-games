@@ -6,7 +6,7 @@ import {Aftermath} from './aftermath';
 import {StoneSheetCutterActions, FlipStates} from '../common/enums';
 import {AnimatedFlip} from '../common/components/animated-flip/animated-flip';
 
-export class StoneSheetCutter extends React.Component {
+export class StoneSheetCutterGame extends React.Component {
 
     constructor(props) {
         super(props);

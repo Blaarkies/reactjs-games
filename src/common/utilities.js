@@ -1,4 +1,11 @@
-import {PlayerNames} from "./enums";
+/***
+ * Returns a random integer {0-max} (inclusive)
+ * @param max
+ * @returns {number}
+ */
+export function getRandomInt(max: number = 9) {
+    return Math.round(Math.random() * max);
+}
 
 /**
  * Return a random element from a given array
@@ -35,3 +42,16 @@ export function getUniqueEntries(list, count) {
     }
     return validEntries;
 }
+
+export function getDistance(a, b) {
+    return Math.hypot(a[0] - b[0], a[1] - b[1]);
+}
+
+export function getDirection(a, b) {
+    return Math.atan2(a[1] - b[1], a[0] - b[0]);
+}
+
+export function getFromEnd(list, index = 0) {
+    return list[list.length - 1 - index];
+}
+
