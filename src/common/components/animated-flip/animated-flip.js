@@ -42,12 +42,12 @@ export class AnimatedFlip extends React.Component {
 
         return (
             <div>
-                <div className={this.state.aSideClass}
+                <div className={`${this.state.aSideClass} ${this.state.aNoClickClass}`}
                      onAnimationEnd={() => this.handleAEndAnimation()}>
                     {this.props.value[0]}
                 </div>
 
-                <div className={this.state.bSideClass}
+                <div className={`${this.state.bSideClass} ${this.state.bNoClickClass}`}
                      onAnimationEnd={() => this.handleBEndAnimation()}>
                     {this.props.value[1]}
                 </div>
@@ -59,7 +59,9 @@ export class AnimatedFlip extends React.Component {
         this.setState({
             flipDirectionIsForward: true,
             aSideClass: 'flip-game-board-forward',
-            bSideClass: 'display-none'
+            bSideClass: 'display-none',
+            aNoClickClass: 'no-click',
+            bNoClickClass: 'no-click'
         });
         this.state.onStartForwardFlip();
     }
@@ -68,14 +70,18 @@ export class AnimatedFlip extends React.Component {
         if (this.state.flipDirectionIsForward) {
             this.setState({
                 aSideClass: 'display-none',
-                bSideClass: 'flip-message-forward'
+                bSideClass: 'flip-message-forward',
+                aNoClickClass: 'no-click',
+                bNoClickClass: 'no-click'
             });
 
             this.state.onContinueForwardFlip();
         } else {
             this.setState({
                 aSideClass: '',
-                bSideClass: 'display-none'
+                bSideClass: 'display-none',
+                aNoClickClass: '',
+                bNoClickClass: 'no-click'
             });
         }
     }
@@ -85,6 +91,8 @@ export class AnimatedFlip extends React.Component {
             flipDirectionIsForward: false,
             aSideClass: 'display-none',
             bSideClass: 'flip-message-backward',
+            aNoClickClass: 'no-click',
+            bNoClickClass: 'no-click'
         });
 
         this.state.onStartBackwardFlip();
@@ -94,12 +102,16 @@ export class AnimatedFlip extends React.Component {
         if (this.state.flipDirectionIsForward) {
             this.setState({
                 aSideClass: 'display-none',
-                bSideClass: ''
+                bSideClass: '',
+                aNoClickClass: 'no-click',
+                bNoClickClass: ''
             });
         } else {
             this.setState({
                 aSideClass: 'flip-game-board-backward',
-                bSideClass: 'display-none'
+                bSideClass: 'display-none',
+                aNoClickClass: 'no-click',
+                bNoClickClass: 'no-click'
             });
 
             this.state.onContinueBackwardFlip();

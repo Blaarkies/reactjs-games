@@ -1,33 +1,37 @@
 .flip-game-board-forward {
-    animation: flip-forward-90 500ms ease-in both;
+  animation: flip-forward-90 500ms ease-in both;
 }
 
 .flip-message-forward {
-    animation: flip-backward-90 500ms ease-in both;
+  animation: flip-backward-90 500ms ease-in both;
 }
 
 .flip-game-board-backward {
-    animation: flip-forward-90 500ms ease-in both reverse;
+  animation: flip-forward-90 500ms ease-in both reverse;
 }
 
 .flip-message-backward {
-    animation: flip-backward-90 500ms ease-in both reverse;
+  animation: flip-backward-90 500ms ease-in both reverse;
 }
 
 @keyframes flip-forward-90 {
-    from {
-        transform: rotate3d(0, 1, 0, 0deg);
-    }
-    to {
-        transform: rotate3d(0, 1, 0, 90deg);
-    }
+  from {
+    transform: rotate3d(0, 1, 0, 0deg);
+  }
+  to {
+    transform: rotate3d(0, 1, 0, 90deg);
+  }
 }
 
 @keyframes flip-backward-90 {
-    from {
-        transform: rotate3d(0, 1, 0, -90deg);
-    }
-    to {
-        transform: rotate3d(0, 1, 0, 0deg);
-    }
+  from {
+    transform: rotate3d(0, 1, 0, -90deg);
+  }
+  to {
+    transform: rotate3d(0, 1, 0, 0deg);
+  }
+}
+
+.no-click {
+  pointer-events: none;
 }
