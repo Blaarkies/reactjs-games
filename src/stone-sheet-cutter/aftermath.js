@@ -10,7 +10,11 @@ export class Aftermath extends React.Component {
 
         if (playerAction !== undefined && opponentAction !== undefined) {
             let won = StoneSheetCutterActions[playerAction.enum].index === opponentAction.defeatedByIndex;
-            aftermathMessage = won ? `You won!` : `You failed to win...`;
+            if (!won && playerAction === opponentAction) {
+                aftermathMessage = `You tie~`;
+            } else {
+                aftermathMessage = won ? `You win!` : `You lose...`;
+            }
         }
 
         return (

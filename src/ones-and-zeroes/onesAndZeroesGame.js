@@ -57,7 +57,7 @@ export class OnesAndZeroesGame extends React.Component {
             this.setState({isBoardLocked: true});
             await delay(1500);
             this.setState({
-                winner: winner || 'tie',
+                winner: winner,
                 loser: this.players.find(p => p !== winner),
                 slideState: SlideStates.forwardSlide
             });
@@ -84,7 +84,7 @@ export class OnesAndZeroesGame extends React.Component {
             return;
         }
 
-        return winner;
+        return winner || 'tie';
     }
 
     handleResetClick() {
