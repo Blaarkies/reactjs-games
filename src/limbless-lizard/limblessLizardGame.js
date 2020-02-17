@@ -8,7 +8,13 @@ import {Aftermath} from "./aftermath";
 export class LimblessLizardGame extends React.Component {
 
     canvas = React.createRef();
-    snakeHeadTexture = React.createRef();
+    textures = {
+        snakeHead: React.createRef(),
+        snakeSkin: React.createRef(),
+        apple: React.createRef(),
+        stone: React.createRef()
+    };
+
     intervalHandle;
     colors = {};
     ctx;
@@ -61,7 +67,7 @@ export class LimblessLizardGame extends React.Component {
     }
 
     addTailToSnake(snake, location) {
-        snake.tail.push(...getRange(15).map(_ => location));
+        snake.tail.push(...getRange(8).map(_ => location));
     }
 
     handleReset() {
@@ -89,14 +95,13 @@ export class LimblessLizardGame extends React.Component {
 
     componentDidMount() {
         const canvas = this.canvas.current;
-        const ctx = canvas.getContext("2d");
+        this.ctx = canvas.getContext("2d");
 
-        const gradient = ctx.createRadialGradient(400, 300, 50, 400, 300, 300);
-        gradient.addColorStop(0, '#141');
-        gradient.addColorStop(0.5, '#161');
-        gradient.addColorStop(1.0, '#343');
-        this.colors.gradient = gradient;
-        this.ctx = ctx;
+        this.textures.snakeSkin.current.onload = event =>
+            this.colors.snakeSkinPattern = this.ctx.createPattern(event.target, 'repeat');
+
+        this.textures.stone.current.onload = event =>
+            this.colors.stonePattern = this.ctx.createPattern(event.target, 'repeat');
 
         this.startGame();
     }
@@ -115,9 +120,9 @@ export class LimblessLizardGame extends React.Component {
             this.updateTail(this.snake);
 
             clearScreen(ctx, canvas);
-            drawApples(ctx, this.apples);
-            drawSnake(ctx, this.snake, this.colors.gradient, this.snakeHeadTexture.current);
-            drawBuildings(ctx, this.buildings);
+            drawApples(ctx, this.apples, this.textures.apple.current);
+            drawSnake(ctx, this.snake, this.colors.snakeSkinPattern, this.textures.snakeHead.current);
+            drawBuildings(ctx, this.buildings, this.colors.stonePattern);
             tick++;
         }, 17);
     }
@@ -172,9 +177,12 @@ export class LimblessLizardGame extends React.Component {
                     </div>
                 </div>
 
-                <img ref={this.snakeHeadTexture}
-                     src={require('../assets/snakeHead.png')}
-                     className="snake-head-texture-keeper"/>
+                <div className="texture-keeper">
+                    <img ref={this.textures.snakeHead} src={require('../assets/snakeHead.png')} alt="no texture"/>
+                    <img ref={this.textures.snakeSkin} src={require('../assets/snakeSkin.png')} alt="no texture"/>
+                    <img ref={this.textures.apple} src={require('../assets/apple.png')} alt="no texture"/>
+                    <img ref={this.textures.stone} src={require('../assets/stone.png')} alt="no texture"/>
+                </div>
             </div>
         );
     }
@@ -202,9 +210,8 @@ export class LimblessLizardGame extends React.Component {
             this.showAftermath();
         }
 
-        const snakeHitTail = snake.tail.slice(1).find(t =>
-            getDistance(snake.head, t) < 16
-        );
+        const snakeHitTail = snake.tail.find((t, i) =>
+            i > 10 && getDistance(snake.head, t) < 16);
         if (snakeHitTail) {
             this.showAftermath();
         }
@@ -235,7 +242,8 @@ export class LimblessLizardGame extends React.Component {
         this.apples.push({
             id: tick,
             isEaten: false,
-            location: appleLocation
+            location: appleLocation,
+            direction: Math.random() * Math.PI * 2
         });
     }
 
@@ -274,10 +282,10 @@ export class LimblessLizardGame extends React.Component {
     }
 
     updateTail(snake) {
-        if (getDistance(snake.head, snake.tail[0]) < 20) {
+        if (getDistance(snake.head, snake.tail[0]) < 10) {
             return;
         }
-        snake.tail.unshift(this.getMovedSegment(snake.head, snake.direction + Math.PI, 20));
+        snake.tail.unshift(snake.head.slice());
         snake.tail.pop();
     }
 
