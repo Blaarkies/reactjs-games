@@ -4,6 +4,11 @@ import {getRandomFromArray} from "../common/utilities";
 
 export class Aftermath extends React.Component {
 
+    shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
+        // Stop text updating to new random adjectives, when nothing changed
+        return nextProps.winner !== this.props.winner || nextProps.loser !== this.props.loser
+    }
+
     render() {
         let aftermathMessage;
         if (!this.props.winner) {
