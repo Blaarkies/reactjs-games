@@ -1,69 +1,125 @@
 import * as React from 'react';
 import './style.scss'
-import {KeyboardKeys} from "../common/enums";
+import {Directions, KeyboardKeys} from "../common/enums";
 import {getDirection, getDistance, getFromEnd, getRandomInt, getRange} from "../common/utilities";
 import {clearScreen, drawApples, drawBuildings, drawSnake} from "./render";
 import {Aftermath} from "./aftermath";
 
 export class LimblessLizardGame extends React.Component {
 
-    canvas = React.createRef();
+    gameTimerIntervalHandle;
     textures = {
         snakeHead: React.createRef(),
         snakeSkin: React.createRef(),
         apple: React.createRef(),
         stone: React.createRef()
     };
-
-    intervalHandle;
     colors = {};
     ctx;
 
-    snake = this.getDefaultSnake();
-    buildings = this.getRandomBuildings();
-    apples = [];
+    snake;
+    buildings;
+    apples;
 
-    keysPressed = {
-        ArrowLeft: false,
-        ArrowRight: false,
+    keyboardInput = {
+        ArrowLeftPressed: false,
+        ArrowRightPressed: false,
     };
-    lastSwipe = {
-        screenX: 0,
-        timeStamp: 0
+    touchInput = {
+        lastInputScreenX: 0,
+        timeStamp: 0,
+        timeoutHandle: 0
     };
 
     constructor(props) {
         super(props);
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+        this.respondKeydown = this.respondKeydown.bind(this);
+        this.respondKeyup = this.respondKeyup.bind(this);
 
-        window.addEventListener("keydown", event => {
-            if (event.isComposing || event.keyCode === 229) {
-                return;
-            }
-            const enumKey = KeyboardKeys[event.key];
-            if (enumKey === KeyboardKeys.ArrowLeft) {
-                this.keysPressed.ArrowLeft = true;
-            } else if (enumKey === KeyboardKeys.ArrowRight) {
-                this.keysPressed.ArrowRight = true;
-            }
-        });
-
-        window.addEventListener("keyup", event => {
-            if (event.isComposing || event.keyCode === 229) {
-                return;
-            }
-            const enumKey = KeyboardKeys[event.key];
-            if (enumKey === KeyboardKeys.ArrowLeft) {
-                this.keysPressed.ArrowLeft = false;
-            } else if (enumKey === KeyboardKeys.ArrowRight) {
-                this.keysPressed.ArrowRight = false;
-            }
-        });
+        window.addEventListener('resize', this.updateWindowDimensions);
+        window.addEventListener('keydown', this.respondKeydown);
+        window.addEventListener('keyup', this.respondKeyup);
 
         const lastHighScore = localStorage.getItem('lastScore');
         this.state = {
             score: 0,
-            lastHighScore: lastHighScore
+            lastHighScore: lastHighScore,
+            canvas: React.createRef(),
+            canvasWidth: 800,
+            canvasHeight: 600
         };
+
+        this.snake = this.getDefaultSnake();
+        this.buildings = this.getRandomBuildings();
+        this.apples = [];
+    }
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+
+        const canvas = this.state.canvas.current;
+        this.ctx = canvas.getContext('2d');
+
+        this.textures.snakeSkin.current.onload = event =>
+            this.colors.snakeSkinPattern = this.ctx.createPattern(event.target, 'repeat');
+
+        this.textures.stone.current.onload = event =>
+            this.colors.stonePattern = this.ctx.createPattern(event.target, 'repeat');
+
+        this.startGame();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.gameTimerIntervalHandle);
+        window.removeEventListener('resize', this.updateWindowDimensions);
+        window.removeEventListener('keydown', this.respondKeydown);
+        window.removeEventListener('keyup', this.respondKeyup);
+    }
+
+    updateWindowDimensions() {
+        const freeHeight = window.innerHeight
+            - document.getElementsByClassName('score-board')[0].clientHeight - 30
+            - document.getElementsByClassName('control-board')[0].clientHeight - 30;
+        const freeWidth = window.innerWidth - 20;
+
+        const ratio43 = 1.3333;
+        const currentRatio = freeWidth / freeHeight;
+        if (currentRatio > ratio43) {
+            this.setState({
+                height: freeHeight + 'px',
+                width: freeHeight * ratio43 + 'px'
+            });
+        } else {
+            this.setState({
+                height: freeWidth / ratio43 + 'px',
+                width: freeWidth + 'px'
+            });
+        }
+    }
+
+    respondKeyup(event) {
+        if (event.isComposing || event.keyCode === 229) {
+            return;
+        }
+        const enumKey = KeyboardKeys[event.key];
+        if (enumKey === KeyboardKeys.ArrowLeft) {
+            this.keyboardInput.ArrowLeftPressed = false;
+        } else if (enumKey === KeyboardKeys.ArrowRight) {
+            this.keyboardInput.ArrowRightPressed = false;
+        }
+    }
+
+    respondKeydown(event) {
+        if (event.isComposing || event.keyCode === 229) {
+            return;
+        }
+        const enumKey = KeyboardKeys[event.key];
+        if (enumKey === KeyboardKeys.ArrowLeft) {
+            this.keyboardInput.ArrowLeftPressed = true;
+        } else if (enumKey === KeyboardKeys.ArrowRight) {
+            this.keyboardInput.ArrowRightPressed = true;
+        }
     }
 
     addTailToSnake(snake, location) {
@@ -85,32 +141,19 @@ export class LimblessLizardGame extends React.Component {
 
     getDefaultSnake() {
         const snake = {
-            head: [400, 600 - 50],
+            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 50],
             tail: [],
-            direction: Math.PI * 1.5
+            direction: Math.PI * 1.5 - 0.3
         };
         this.addTailToSnake(snake, this.getMovedSegment(snake.head, snake.direction + Math.PI, 20));
         return snake;
-    }
-
-    componentDidMount() {
-        const canvas = this.canvas.current;
-        this.ctx = canvas.getContext("2d");
-
-        this.textures.snakeSkin.current.onload = event =>
-            this.colors.snakeSkinPattern = this.ctx.createPattern(event.target, 'repeat');
-
-        this.textures.stone.current.onload = event =>
-            this.colors.stonePattern = this.ctx.createPattern(event.target, 'repeat');
-
-        this.startGame();
     }
 
     startGame() {
         const ctx = this.ctx;
         const canvas = this.ctx.canvas;
         let tick = 0;
-        this.intervalHandle = setInterval(_ => {
+        this.gameTimerIntervalHandle = setInterval(_ => {
             this.spawnApples(tick);
 
             this.checkCollisions(this.snake, this.apples, this.buildings);
@@ -127,18 +170,13 @@ export class LimblessLizardGame extends React.Component {
         }, 17);
     }
 
-    componentWillUnmount() {
-        clearInterval(this.intervalHandle);
-    }
-
     render() {
         const afterMathComponent = this.state?.showAftermath
             ? <Aftermath onClick={() => this.handleReset()}/> : null;
 
         return (
             <div className="screen-container"
-                // onTouchMove={event => this.touchMoved(event)}
-            >
+                 onTouchMove={event => this.touchMoved(event)}>
                 <div className="game-container">
                     <div className="score-board">
                         <div>
@@ -150,11 +188,13 @@ export class LimblessLizardGame extends React.Component {
                             <span className="score-value">{this.state.lastHighScore}</span>
                         </div>
                     </div>
-                    <div className="overlap-container">
+                    <div className="overlap-container place-self-center"
+                         style={{height: this.state.height, width: this.state.width,}}>
                         <div className="canvas-container"
                              onMouseDown={event => this.handleMousePress(event)}
                              onMouseMove={event => this.handleMouseMove(event)}>
-                            <canvas ref={this.canvas} width={800} height={600}/>
+                            <canvas ref={this.state.canvas} width={800} height={600}
+                                    style={{height: this.state.height, width: this.state.width,}}/>
                         </div>
 
                         {afterMathComponent}
@@ -166,12 +206,12 @@ export class LimblessLizardGame extends React.Component {
                             </div>
                             <div className="input-mode-mobile">Turn using the onscreen buttons</div>
                         </div>
-                        <button onPointerDown={() => this.keysPressed.ArrowLeft = true}
-                                onPointerUp={() => this.keysPressed.ArrowLeft = false}>
+                        <button onPointerDown={() => this.keyboardInput.ArrowLeftPressed = true}
+                                onPointerUp={() => this.keyboardInput.ArrowLeftPressed = false}>
                             ↺
                         </button>
-                        <button onPointerDown={() => this.keysPressed.ArrowRight = true}
-                                onPointerUp={() => this.keysPressed.ArrowRight = false}>
+                        <button onPointerDown={() => this.keyboardInput.ArrowRightPressed = true}
+                                onPointerUp={() => this.keyboardInput.ArrowRightPressed = false}>
                             ↻
                         </button>
                     </div>
@@ -199,8 +239,8 @@ export class LimblessLizardGame extends React.Component {
         let headRadius = 10;
         let headX = snake.head[0];
         let headY = snake.head[1];
-        const snakeIsOutOfBounds = headX < headRadius || headX > 800 - headRadius
-            || headY < headRadius || headY > 600 - headRadius;
+        const snakeIsOutOfBounds = headX < headRadius || headX > this.state.canvasWidth - headRadius
+            || headY < headRadius || headY > this.state.canvasHeight - headRadius;
         if (snakeIsOutOfBounds) {
             this.showAftermath();
         }
@@ -232,8 +272,8 @@ export class LimblessLizardGame extends React.Component {
         let appleLocation;
         while (!appleLocation) {
             let colliderRadius = 30;
-            const location = [getRandomInt(800 - colliderRadius * 2) + colliderRadius,
-                getRandomInt(600 - colliderRadius * 2) + colliderRadius];
+            const location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
+                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
             appleLocation = this.getHitBuilding(this.buildings, colliderRadius, ...location)
                 ? undefined
                 : location;
@@ -248,9 +288,9 @@ export class LimblessLizardGame extends React.Component {
     }
 
     handleUserKeysInput() {
-        if (this.keysPressed.ArrowLeft) {
+        if (this.keyboardInput.ArrowLeftPressed) {
             this.rotateHead(-0.049);
-        } else if (this.keysPressed.ArrowRight) {
+        } else if (this.keyboardInput.ArrowRightPressed) {
             this.rotateHead(+0.049);
         }
     }
@@ -296,7 +336,7 @@ export class LimblessLizardGame extends React.Component {
     }
 
     showAftermath() {
-        clearInterval(this.intervalHandle);
+        clearInterval(this.gameTimerIntervalHandle);
         this.setState({showAftermath: true});
 
         if (this.state.score > this.state.lastHighScore) {
@@ -307,8 +347,8 @@ export class LimblessLizardGame extends React.Component {
     getRandomBuildings() {
         return getRange(getRandomInt(4) + 2).map(_ => {
             const colliderRadius = 0;
-            let location = [getRandomInt(800 - colliderRadius * 2) + colliderRadius,
-                getRandomInt(600 - colliderRadius * 2) + colliderRadius];
+            let location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
+                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
 
             let orientation;
             switch (getRandomInt(2)) {
@@ -337,19 +377,19 @@ export class LimblessLizardGame extends React.Component {
     }
 
     touchMoved(event) {
-        console.log(this.lastSwipe.timeStamp - event.timeStamp);
-        if (this.lastSwipe.timeStamp < event.timeStamp - 100) {
-            this.lastSwipe.timeStamp = event.timeStamp;
-            this.lastSwipe.screenX = event.touches[0].screenX;
-            this.keysPressed.ArrowLeft = false;
-            this.keysPressed.ArrowRight = false;
-        } else {
-            const direction = this.lastSwipe.screenX > event.touches[0].screenX
-                ? 'left'
-                : 'right';
+        clearTimeout(this.touchInput.timeoutHandle);
 
-            this.keysPressed.ArrowLeft = direction === 'left';
-            this.keysPressed.ArrowRight = direction === 'right';
-        }
+        const direction = this.touchInput.lastInputScreenX > event.touches[0].screenX
+            ? Directions.Left
+            : Directions.Right;
+
+        this.keyboardInput.ArrowLeftPressed = direction === Directions.Left;
+        this.keyboardInput.ArrowRightPressed = direction === Directions.Right;
+        this.touchInput.lastInputScreenX = event.touches[0].screenX;
+
+        this.touchInput.timeoutHandle = setTimeout(_ => this.keyboardInput.ArrowLeftPressed
+                = this.keyboardInput.ArrowRightPressed
+                = false,
+            100);
     }
 }

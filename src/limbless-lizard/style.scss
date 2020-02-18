@@ -1,6 +1,10 @@
 .score-board {
+  padding: 20px;
+
   display: grid;
   grid-auto-flow: column;
+  grid-column-gap: 60px;
+  place-content: center;
 
   .score-text {
     font-size: 30px;
@@ -17,10 +21,10 @@
 
 .control-board {
   user-select: none;
+  padding: 0 20px;
 
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
+  grid-template-columns: auto max-content max-content;
   grid-gap: 20px;
   place-content: center;
 
@@ -31,11 +35,20 @@
     height: 70px;
     width: 70px;
   }
+
+  > .info-text {
+    color: aliceblue;
+    font-size: 20px;
+  }
 }
 
 .canvas-container {
   outline: 1px solid #BBB5;
   cursor: grab;
+}
+
+.place-self-center {
+  place-self: center;
 }
 
 .texture-keeper {
@@ -90,11 +103,6 @@
   }
 }
 
-.info-text {
-  color: aliceblue;
-  font-size: 20px;
-}
-
 .input-mode-keyboard {
 }
 
@@ -108,7 +116,7 @@
   }
 
   .input-mode-mobile {
-    display: unset;
+    display: initial;
   }
 }
 
@@ -118,6 +126,19 @@
   }
 
   .input-mode-mobile {
-    display: unset;
+    display: initial;
+  }
+
+  .score-board {
+    grid-auto-flow: row;
+    place-items: end;
+  }
+
+  .control-board {
+    > button {
+      font-size: 30px;
+      height: 50px;
+      width: 50px;
+    }
   }
 }
