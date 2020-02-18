@@ -7,7 +7,6 @@ import {Aftermath} from "./aftermath";
 
 export class LimblessLizardGame extends React.Component {
 
-    canvas = React.createRef();
     textures = {
         snakeHead: React.createRef(),
         snakeSkin: React.createRef(),
@@ -19,8 +18,8 @@ export class LimblessLizardGame extends React.Component {
     colors = {};
     ctx;
 
-    snake = this.getDefaultSnake();
-    buildings = this.getRandomBuildings();
+    snake;
+    buildings;
     apples = [];
 
     keysPressed = {
@@ -62,8 +61,58 @@ export class LimblessLizardGame extends React.Component {
         const lastHighScore = localStorage.getItem('lastScore');
         this.state = {
             score: 0,
-            lastHighScore: lastHighScore
+            lastHighScore: lastHighScore,
+            canvas: React.createRef(),
+            canvasWidth: 800,
+            canvasHeight: 600
         };
+
+        this.snake = this.getDefaultSnake();
+        this.buildings = this.getRandomBuildings();
+
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    }
+
+    componentDidMount() {
+        this.updateWindowDimensions();
+        window.addEventListener('resize', this.updateWindowDimensions);
+
+        const canvas = this.state.canvas.current;
+        this.ctx = canvas.getContext("2d");
+
+        this.textures.snakeSkin.current.onload = event =>
+            this.colors.snakeSkinPattern = this.ctx.createPattern(event.target, 'repeat');
+
+        this.textures.stone.current.onload = event =>
+            this.colors.stonePattern = this.ctx.createPattern(event.target, 'repeat');
+
+        this.startGame();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalHandle);
+        window.removeEventListener('resize', this.updateWindowDimensions);
+    }
+
+    updateWindowDimensions() {
+        const freeHeight = window.innerHeight
+            - document.getElementsByClassName('score-board')[0].clientHeight - 30
+            - document.getElementsByClassName('control-board')[0].clientHeight - 30;
+        const freeWidth = window.innerWidth - 20;
+
+        const ratio43 = 1.3333;
+        const currentRatio = freeWidth / freeHeight;
+        if (currentRatio > ratio43) {
+            this.setState({
+                height: freeHeight + 'px',
+                width: freeHeight * ratio43 + 'px'
+            });
+        } else {
+            this.setState({
+                height: freeWidth / ratio43 + 'px',
+                width: freeWidth + 'px'
+            });
+        }
     }
 
     addTailToSnake(snake, location) {
@@ -85,25 +134,12 @@ export class LimblessLizardGame extends React.Component {
 
     getDefaultSnake() {
         const snake = {
-            head: [400, 600 - 50],
+            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 50],
             tail: [],
-            direction: Math.PI * 1.5
+            direction: Math.PI * 1.5 - 0.3
         };
         this.addTailToSnake(snake, this.getMovedSegment(snake.head, snake.direction + Math.PI, 20));
         return snake;
-    }
-
-    componentDidMount() {
-        const canvas = this.canvas.current;
-        this.ctx = canvas.getContext("2d");
-
-        this.textures.snakeSkin.current.onload = event =>
-            this.colors.snakeSkinPattern = this.ctx.createPattern(event.target, 'repeat');
-
-        this.textures.stone.current.onload = event =>
-            this.colors.stonePattern = this.ctx.createPattern(event.target, 'repeat');
-
-        this.startGame();
     }
 
     startGame() {
@@ -127,10 +163,6 @@ export class LimblessLizardGame extends React.Component {
         }, 17);
     }
 
-    componentWillUnmount() {
-        clearInterval(this.intervalHandle);
-    }
-
     render() {
         const afterMathComponent = this.state?.showAftermath
             ? <Aftermath onClick={() => this.handleReset()}/> : null;
@@ -150,11 +182,13 @@ export class LimblessLizardGame extends React.Component {
                             <span className="score-value">{this.state.lastHighScore}</span>
                         </div>
                     </div>
-                    <div className="overlap-container">
+                    <div className="overlap-container place-self-center"
+                         style={{height: this.state.height, width: this.state.width,}}>
                         <div className="canvas-container"
                              onMouseDown={event => this.handleMousePress(event)}
                              onMouseMove={event => this.handleMouseMove(event)}>
-                            <canvas ref={this.canvas} width={800} height={600}/>
+                            <canvas ref={this.state.canvas} width={800} height={600}
+                                    style={{height: this.state.height, width: this.state.width,}}/>
                         </div>
 
                         {afterMathComponent}
@@ -199,8 +233,8 @@ export class LimblessLizardGame extends React.Component {
         let headRadius = 10;
         let headX = snake.head[0];
         let headY = snake.head[1];
-        const snakeIsOutOfBounds = headX < headRadius || headX > 800 - headRadius
-            || headY < headRadius || headY > 600 - headRadius;
+        const snakeIsOutOfBounds = headX < headRadius || headX > this.state.canvasWidth - headRadius
+            || headY < headRadius || headY > this.state.canvasHeight - headRadius;
         if (snakeIsOutOfBounds) {
             this.showAftermath();
         }
@@ -232,8 +266,8 @@ export class LimblessLizardGame extends React.Component {
         let appleLocation;
         while (!appleLocation) {
             let colliderRadius = 30;
-            const location = [getRandomInt(800 - colliderRadius * 2) + colliderRadius,
-                getRandomInt(600 - colliderRadius * 2) + colliderRadius];
+            const location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
+                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
             appleLocation = this.getHitBuilding(this.buildings, colliderRadius, ...location)
                 ? undefined
                 : location;
@@ -307,8 +341,8 @@ export class LimblessLizardGame extends React.Component {
     getRandomBuildings() {
         return getRange(getRandomInt(4) + 2).map(_ => {
             const colliderRadius = 0;
-            let location = [getRandomInt(800 - colliderRadius * 2) + colliderRadius,
-                getRandomInt(600 - colliderRadius * 2) + colliderRadius];
+            let location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
+                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
 
             let orientation;
             switch (getRandomInt(2)) {
