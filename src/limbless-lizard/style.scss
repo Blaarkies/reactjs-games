@@ -34,6 +34,7 @@
     font-size: 40px;
     height: 70px;
     width: 70px;
+    padding: 0;
   }
 
   > .info-text {
@@ -98,6 +99,12 @@
   > .souls-button {
     filter: drop-shadow(0 0 3px black);
     background-color: transparent;
+    opacity: 0.3;
+    font-size: 20px;
+  }
+
+  > .souls-text {
+    filter: drop-shadow(0 0 3px black);
     opacity: 0.3;
     font-size: 20px;
   }

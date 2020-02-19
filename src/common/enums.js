@@ -128,6 +128,7 @@ export const KeyboardKeys = {
     ArrowDown: 'arrowdown',
     ArrowLeft: 'arrowleft',
     ArrowRight: 'arrowright',
+    f: 'f'
 };
 
 export const Directions = {
