@@ -9,12 +9,12 @@ export function drawSnake(ctx, snake, pattern, textureHead) {
     ctx.stroke();
 
     const angle = -Math.PI * 0.5 - 0.05 + snake.direction;
-    const headSize = [25, 40];
+    const headSize = [25, 38];
     ctx.save();
     ctx.translate(...snake.head);
     ctx.rotate(angle);
-    ctx.translate(-headSize[0] * 0.5, -headSize[1] * 0.5);
-    ctx.drawImage(textureHead, 0, 0, 71, 112, 0, 0, ...headSize);
+    ctx.translate(-headSize[0] * .5, -headSize[1] * .5);
+    ctx.drawImage(textureHead, 0, 0, 65, 112, 0, 0, ...headSize);
     ctx.restore();
 }
 

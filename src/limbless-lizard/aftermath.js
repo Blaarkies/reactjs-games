@@ -11,6 +11,7 @@ export class Aftermath extends React.Component {
                         <button className="souls-button" onClick={() => this.props.onClick()}>
                             START OVER
                         </button>
+                        <div className="souls-text">or Press F to Pay Respects</div>
                     </div>
                 </div>
             </div>

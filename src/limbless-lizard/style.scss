@@ -102,6 +102,12 @@
     opacity: 0.3;
     font-size: 20px;
   }
+
+  > .souls-text {
+    filter: drop-shadow(0 0 3px black);
+    opacity: 0.3;
+    font-size: 20px;
+  }
 }
 
 .input-mode-keyboard {

@@ -1,7 +1,15 @@
 import * as React from 'react';
 import './style.scss'
 import {Directions, KeyboardKeys} from "../common/enums";
-import {getDirection, getDistance, getFromEnd, getRandomInt, getRange} from "../common/utilities";
+import {
+    getAdditionLocations, getArrangedRectangleCorners,
+    getDirection,
+    getDistance,
+    getFromEnd,
+    getMultiplicationLocation,
+    getRandomInt, getRandomSign,
+    getRange, getTranslatedLocation
+} from "../common/utilities";
 import {clearScreen, drawApples, drawBuildings, drawSnake} from "./render";
 import {Aftermath} from "./aftermath";
 
@@ -119,6 +127,10 @@ export class LimblessLizardGame extends React.Component {
             this.keyboardInput.ArrowLeftPressed = true;
         } else if (enumKey === KeyboardKeys.ArrowRight) {
             this.keyboardInput.ArrowRightPressed = true;
+        } else if (enumKey === KeyboardKeys.f) {
+            if (this.state.showAftermath) {
+                this.handleReset();
+            }
         }
     }
 
@@ -141,11 +153,11 @@ export class LimblessLizardGame extends React.Component {
 
     getDefaultSnake() {
         const snake = {
-            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 10],
+            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 15],
             tail: [],
             direction: Math.PI * 1.5 - 0.3
         };
-        this.addTailToSnake(snake, this.getMovedSegment(snake.head, snake.direction + Math.PI, 20));
+        this.addTailToSnake(snake, getTranslatedLocation(snake.head, snake.direction + Math.PI, 20));
         return snake;
     }
 
@@ -202,10 +214,11 @@ export class LimblessLizardGame extends React.Component {
 
                     <div className="control-board">
                         <div className="info-text">
-                            <div className="input-mode-keyboard">Turn using the keyboard, or the on-screen buttons
+                            <div className="input-mode-keyboard">Turn using the keyboard left/right arrows, or click these
+                                on-screen buttons
                             </div>
-                            <div className="input-mode-mobile">Turn by swiping left or right on the game screen, or
-                                press the on-screen buttons
+                            <div className="input-mode-mobile">Turn by swiping left/right on the game screen, or press
+                                these on-screen buttons
                             </div>
                         </div>
                         <button onPointerDown={() => this.keyboardInput.ArrowLeftPressed = true}
@@ -273,7 +286,7 @@ export class LimblessLizardGame extends React.Component {
 
         let appleLocation;
         while (!appleLocation) {
-            let colliderRadius = 30;
+            let colliderRadius = 34;
             const location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
                 getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
             appleLocation = this.getHitBuilding(this.buildings, colliderRadius, ...location)
@@ -316,11 +329,11 @@ export class LimblessLizardGame extends React.Component {
         const timePeriod = 0.1;
         const signal = Math.sin(tick * timePeriod) * amplitude;
         snake.direction += signal;
-        snake.head = this.getMovedSegment(snake.head, snake.direction, speed);
+        snake.head = getTranslatedLocation(snake.head, snake.direction, speed);
 
         const lastSegments = [getFromEnd(snake.tail, 1), getFromEnd(snake.tail)];
         const tailTipDirection = getDirection(...lastSegments);
-        snake.tail[snake.tail.length - 1] = this.getMovedSegment(lastSegments[1], tailTipDirection, speed);
+        snake.tail[snake.tail.length - 1] = getTranslatedLocation(lastSegments[1], tailTipDirection, speed);
     }
 
     updateTail(snake) {
@@ -329,12 +342,6 @@ export class LimblessLizardGame extends React.Component {
         }
         snake.tail.unshift(snake.head.slice());
         snake.tail.pop();
-    }
-
-    getMovedSegment(segment, direction, speed) {
-        const x = segment[0];
-        const y = segment[1];
-        return [x + Math.cos(direction) * speed, y + Math.sin(direction) * speed];
     }
 
     showAftermath() {
@@ -347,13 +354,13 @@ export class LimblessLizardGame extends React.Component {
     }
 
     getRandomBuildings() {
-        return getRange(getRandomInt(400) + 2).map(_ => {
-            const colliderRadius = 0;
-            let location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
-                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
+        let canvasWidth = this.state.canvasWidth;
+        let canvasHeight = this.state.canvasHeight;
 
+        return getRange(3).map(_ => {
+            let location = [getRandomInt(canvasWidth), getRandomInt(canvasHeight)];
             let orientation;
-            switch (2 || getRandomInt(2)) {
+            switch (getRandomInt(2)) {
                 case 0:
                     orientation = [250, 50];
                     break;
@@ -368,15 +375,62 @@ export class LimblessLizardGame extends React.Component {
             }
 
             const locationInFrontOfHead = [this.snake.head[0], this.snake.head[1] - 100];
-            if (getDistance(location, locationInFrontOfHead) < 200) {
-                location = this.getMovedSegment(
+            let safeZoneRadius = 250;
+            if (getDistance(location, locationInFrontOfHead) < safeZoneRadius) {
+                location = getTranslatedLocation(
                     location,
-                    getDirection(this.snake.head, location) + Math.PI,
-                    200 - getDistance(location, locationInFrontOfHead)
+                    getDirection(locationInFrontOfHead, location) + Math.PI,
+                    safeZoneRadius - getDistance(location, locationInFrontOfHead)
                 );
             }
-            return [...location, location[0] + orientation[0], location[1] + orientation[1]];
-        });
+            return {
+                center: location,
+                size: orientation
+            };
+        })
+            .flatMap(building => {
+                const oldBuilding = [
+                    ...getAdditionLocations(building.center, getMultiplicationLocation(building.size, -.5)),
+                    ...getAdditionLocations(building.center, getMultiplicationLocation(building.size, .5))
+                ];
+
+                let newBuilding;
+                if (Math.random() > .5) {
+                    const mapCenter = getMultiplicationLocation([canvasWidth, canvasHeight], .5);
+                    const direction = getDirection(building.center, mapCenter);
+
+                    if (direction < -Math.PI * .5) {
+                        const botLeftCorner = getAdditionLocations(building.center,
+                            [-building.size[0] * .5, building.size[1] * .5]);
+                        newBuilding = this.getNewBuildingExtension(botLeftCorner, building.center);
+
+                    } else if (direction < 0) {
+                        const botRightCorner = getAdditionLocations(building.center,
+                            [building.size[0] * .5, building.size[1] * .5]);
+                        newBuilding = this.getNewBuildingExtension(botRightCorner, building.center);
+
+                    } else if (direction < Math.PI * .5) {
+                        const topRightCorner = getAdditionLocations(building.center,
+                            [building.size[0] * .5, -building.size[1] * .5]);
+                        newBuilding = this.getNewBuildingExtension(topRightCorner, building.center);
+
+                    } else if (direction < Math.PI) {
+                        const topLeftCorner = getAdditionLocations(building.center,
+                            getMultiplicationLocation(building.size, -.5));
+                        newBuilding = this.getNewBuildingExtension(topLeftCorner, building.center);
+
+                    }
+                }
+
+                return newBuilding ? [oldBuilding, newBuilding] : [oldBuilding];
+            });
+    }
+
+    getNewBuildingExtension(corner, buildingCenter, extensionSize = getRandomInt(75) + 113) {
+        const direction = getDirection(buildingCenter, corner);
+        const directionNormal = direction + Math.PI * .5 * getRandomSign();
+        const newCorner = getTranslatedLocation(corner, directionNormal, extensionSize);
+        return getArrangedRectangleCorners(corner, newCorner);
     }
 
     touchMoved(event) {
