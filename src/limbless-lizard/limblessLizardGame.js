@@ -141,7 +141,7 @@ export class LimblessLizardGame extends React.Component {
 
     getDefaultSnake() {
         const snake = {
-            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 50],
+            head: [this.state.canvasWidth * .5, this.state.canvasHeight - 10],
             tail: [],
             direction: Math.PI * 1.5 - 0.3
         };
@@ -202,17 +202,19 @@ export class LimblessLizardGame extends React.Component {
 
                     <div className="control-board">
                         <div className="info-text">
-                            <div className="input-mode-keyboard">Turn using the keyboard, or the onscreen buttons
+                            <div className="input-mode-keyboard">Turn using the keyboard, or the on-screen buttons
                             </div>
-                            <div className="input-mode-mobile">Turn using the onscreen buttons</div>
+                            <div className="input-mode-mobile">Turn by swiping left or right on the game screen, or
+                                press the on-screen buttons
+                            </div>
                         </div>
                         <button onPointerDown={() => this.keyboardInput.ArrowLeftPressed = true}
                                 onPointerUp={() => this.keyboardInput.ArrowLeftPressed = false}>
-                            ↺
+                            <div>↺</div>
                         </button>
                         <button onPointerDown={() => this.keyboardInput.ArrowRightPressed = true}
                                 onPointerUp={() => this.keyboardInput.ArrowRightPressed = false}>
-                            ↻
+                            <div>↻</div>
                         </button>
                     </div>
                 </div>
@@ -345,13 +347,13 @@ export class LimblessLizardGame extends React.Component {
     }
 
     getRandomBuildings() {
-        return getRange(getRandomInt(4) + 2).map(_ => {
+        return getRange(getRandomInt(400) + 2).map(_ => {
             const colliderRadius = 0;
             let location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
                 getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
 
             let orientation;
-            switch (getRandomInt(2)) {
+            switch (2 || getRandomInt(2)) {
                 case 0:
                     orientation = [250, 50];
                     break;
@@ -365,11 +367,12 @@ export class LimblessLizardGame extends React.Component {
                     break;
             }
 
-            if (getDistance(location, this.snake.head) < 300) {
+            const locationInFrontOfHead = [this.snake.head[0], this.snake.head[1] - 100];
+            if (getDistance(location, locationInFrontOfHead) < 200) {
                 location = this.getMovedSegment(
                     location,
-                    -getDirection(this.snake.head, location),
-                    900
+                    getDirection(this.snake.head, location) + Math.PI,
+                    200 - getDistance(location, locationInFrontOfHead)
                 );
             }
             return [...location, location[0] + orientation[0], location[1] + orientation[1]];
