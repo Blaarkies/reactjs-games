@@ -69,9 +69,9 @@ export function getArrangedRectangleCorners(a, b) {
     } else if (direction < 0) {
         return [b[0], a[1], a[0], b[1]];
     } else if (direction < Math.PI * .5) {
-        return [a[0], b[1], b[0], a[1]];
-    } else if (direction < Math.PI) {
         return [...b, ...a];
+    } else if (direction < Math.PI) {
+        return [a[0], b[1], b[0], a[1]];
     }
 }
 
