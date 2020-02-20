@@ -214,7 +214,8 @@ export class LimblessLizardGame extends React.Component {
 
                     <div className="control-board">
                         <div className="info-text">
-                            <div className="input-mode-keyboard">Turn using the keyboard left/right arrows, or click these
+                            <div className="input-mode-keyboard">Turn using the keyboard left/right arrows, or click
+                                these
                                 on-screen buttons
                             </div>
                             <div className="input-mode-mobile">Turn by swiping left/right on the game screen, or press
@@ -280,18 +281,40 @@ export class LimblessLizardGame extends React.Component {
     }
 
     spawnApples(tick) {
-        if (this.apples.filter(a => !a.isEaten).length > 1) {
+        let liveApples = this.apples.filter(a => !a.isEaten);
+        if (liveApples.length > 1) {
             return;
         }
 
+        let canvasWidth = this.state.canvasWidth;
+        let canvasHeight = this.state.canvasHeight;
+        const mapCenter = getMultiplicationLocation([canvasWidth, canvasHeight], .5);
+
+        let retryCount = 0;
         let appleLocation;
         while (!appleLocation) {
             let colliderRadius = 34;
-            const location = [getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
-                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius];
-            appleLocation = this.getHitBuilding(this.buildings, colliderRadius, ...location)
+            const location = [
+                getRandomInt(this.state.canvasWidth - colliderRadius * 2) + colliderRadius,
+                getRandomInt(this.state.canvasHeight - colliderRadius * 2) + colliderRadius
+            ];
+            appleLocation = (
+                getDistance(location, mapCenter) > Math.max(...mapCenter)
+                || this.getHitBuilding(this.buildings, colliderRadius * 1.5, ...location)
+                || this.buildings
+                    .filter(b => [b.slice(0, 2), b.slice(2, 4)].some((corner, i, a) =>
+                        getDistance(corner, location) < getDistance(...a) * .5))
+                    .length > 1
+                || (this.apples.length < 100
+                    && this.apples.some(a => getDistance(a.location, location) < colliderRadius))
+            )
                 ? undefined
                 : location;
+
+            retryCount++;
+            if (retryCount > 10) {
+                appleLocation = getFromEnd(this.snake.tail).slice();
+            }
         }
 
         this.apples.push({
